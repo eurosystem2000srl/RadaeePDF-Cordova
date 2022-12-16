@@ -303,6 +303,7 @@
 		<source-file src="src/android/ViewLib/src/main/res/values-it/strings.xml" target-dir="res/values-it" />
 		<source-file src="src/android/ViewLib/src/main/res/values-sw600dp/bools.xml" target-dir="res/values-sw600dp" />
 		<source-file src="src/android/ViewLib/src/main/res/values-xlarge/bools.xml" target-dir="res/values-xlarge" />
+        <resource-file src="src/android/ViewLib/src/main/res/values/colors.xml" target-dir="res/values" />
 		<source-file src="src/android/ViewLib/src/main/res/values/dimens.xml" target-dir="res/values" />
 
 		<!-- Radaee res -->
@@ -633,7 +634,6 @@
         <resource-file src="fonts/Roboto-Medium.ttf" />
         <resource-file src="fonts/Roboto-Regular.ttf" />
         <resource-file src="fonts/Roboto-RegularItalic.ttf" />
-        <resource-file src="src/android/ViewLib/src/main/res/values/colors.xml" target-dir="res/values" />
         <config-file target="*-Info.plist" parent="Fonts provided by application">
 			<array>
         		<string>Roboto-Black.ttf</string>
