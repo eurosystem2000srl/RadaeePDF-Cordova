@@ -303,7 +303,7 @@
 		<source-file src="src/android/ViewLib/src/main/res/values-it/strings.xml" target-dir="res/values-it" />
 		<source-file src="src/android/ViewLib/src/main/res/values-sw600dp/bools.xml" target-dir="res/values-sw600dp" />
 		<source-file src="src/android/ViewLib/src/main/res/values-xlarge/bools.xml" target-dir="res/values-xlarge" />
-        <source-file src="src/android/ViewLib/src/main/res/values/colors.xml" target="res/values/colors_radaee.xml" />
+        <resource-file src="src/android/ViewLib/src/main/res/values/colors.xml" target="/app/src/main/res/values/colors_radaee.xml" />
 		<source-file src="src/android/ViewLib/src/main/res/values/dimens.xml" target-dir="res/values" />
 
 		<!-- Radaee res -->
