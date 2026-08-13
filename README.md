@@ -1,4 +1,5 @@
-# RadaeePDF-Cordova Plugin
+# RadaeePDF SDK - Cordova Plugin
+<img src="https://www.radaeepdf.com/wp-content/uploads/2024/08/solo_butterly_midres.png" style="width:100px;"> 
 
 The repository has been moved to https://github.com/RadaeePDF-Jugaad/RadaeePDF-Cordova
 
@@ -56,7 +57,6 @@ For iOS, you have to call it before calling any other interface.
 ```javascript
 RadaeePDFPlugin.activateLicense(
 	{
-		licenseType: 0, //0: for standard license, 1: for professional license, 2: for premium license
 		company: "", //the company name you entered during license activation
 		email: "", //the email you entered during license activation
 		key: "" //you license activation key
@@ -101,7 +101,7 @@ RadaeePDFPlugin.open(
 ```javascript
 RadaeePDFPlugin.openFromAssets(
 	{
-		url: "Test.PDF", //the pdf name
+		url: "test.pdf", //the pdf name
 		password: "" //password if needed
 	},
 	function(message) {
@@ -143,7 +143,7 @@ RadaeePDF library version included:
 
 Original development: 
 - This plugin was created based on [PaoloMessina/RadaeeCordova](https://github.com/PaoloMessina/RadaeeCordova)  
-   www.paolomessina.it, email: paolo.messina.it@gmail.com
+  email: paolo.messina.it@gmail.com
 
 More information about RadaeePDF SDK on http://www.radaeepdf.com.  
-For guide please check [Knowledge Base articles](http://www.radaeepdf.com/support/knowledge-base?view=kb&catid=4)
+For guide please check [Knowledge Base articles](https://support.radaeepdf.com/kb)
