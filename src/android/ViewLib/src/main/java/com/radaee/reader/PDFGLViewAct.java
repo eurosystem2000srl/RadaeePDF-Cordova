@@ -247,6 +247,18 @@ public class PDFGLViewAct extends Activity implements ILayoutView.PDFLayoutListe
 			v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
 			return insets;
 		});
+		// On API 33+, once android:enableOnBackInvokedCallback="true" is set
+		// for this Activity (see plugin.xml), the system stops delivering
+		// back navigation through onBackPressed() and expects an
+		// OnBackInvokedCallback instead — confirmed on an Android 16 device
+		// via logcat: "onBackInvoked" fires but onBackPressed() never runs,
+		// silently skipping the "save changes?" dialog. Forward to the
+		// existing onBackPressed() override so all the logic there (save
+		// prompt, MODIFIED_NOT_SAVED check, etc.) still applies unchanged.
+		if (android.os.Build.VERSION.SDK_INT >= 33) {
+			getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+					android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::onBackPressed);
+		}
 	}
 
 	@Override
@@ -296,10 +308,7 @@ public class PDFGLViewAct extends Activity implements ILayoutView.PDFLayoutListe
 	}
 
 	public void onBackPressed() {
-		boolean controllerSaysProceed = m_controller == null || m_controller.OnBackPressed();
-		android.util.Log.d("RadaeeDialogDebug", "onBackPressed() m_controller=" + m_controller
-				+ " controllerSaysProceed=" + controllerSaysProceed);
-		if (controllerSaysProceed)
+		if (m_controller == null || m_controller.OnBackPressed())
 			onClose(true);
 	}
 
@@ -310,15 +319,7 @@ public class PDFGLViewAct extends Activity implements ILayoutView.PDFLayoutListe
 			recent.insert(m_path, m_view.PDFGetPos(0, 0).pageno, m_view.PDFGetView());
 			recent.Close();
 		}
-		if (m_controller == null) {
-			android.util.Log.d("RadaeeDialogDebug", "onClose() abort: m_controller null");
-			return;
-		}
-		int fileState = m_controller.getFileState();
-		boolean autoSaveExtra = getIntent().getBooleanExtra("AUTOMATIC_SAVE", false);
-		android.util.Log.d("RadaeeDialogDebug", "onClose() fileState=" + fileState
-				+ " (MODIFIED_NOT_SAVED=" + PDFViewController.MODIFIED_NOT_SAVED + ")"
-				+ " autoSaveExtra=" + autoSaveExtra + " Global.g_auto_save_doc=" + Global.g_auto_save_doc);
+		if (m_controller == null) return;
 		if (m_controller.getFileState() == PDFViewController.MODIFIED_NOT_SAVED) {
 			if (getIntent().getBooleanExtra("AUTOMATIC_SAVE", false) || Global.g_auto_save_doc) {
 				if (m_controller != null) m_controller.savePDF();
