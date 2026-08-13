@@ -1277,7 +1277,7 @@ public class PDFViewController implements OnClickListener, SeekBar.OnSeekBarChan
         @Override
         public boolean flatAnnotAtPage(int page) {
             Document document = m_view.PDFGetDoc();
-            if (document == null && !TextUtils.isEmpty(m_docPath)) { // try to re-open the document
+            if ((document == null || !document.IsOpened()) && !TextUtils.isEmpty(m_docPath)) { // try to re-open the document
                 document = new Document();
                 document.Open(m_docPath, "");
             }
@@ -1286,7 +1286,7 @@ public class PDFViewController implements OnClickListener, SeekBar.OnSeekBarChan
         @Override
         public boolean flatAnnots() {
             Document document = m_view.PDFGetDoc();
-            if (document == null && !TextUtils.isEmpty(m_docPath)) { // try to re-open the document
+            if ((document == null || !document.IsOpened()) && !TextUtils.isEmpty(m_docPath)) { // try to re-open the document
                 document = new Document();
                 document.Open(m_docPath, "");
             }
