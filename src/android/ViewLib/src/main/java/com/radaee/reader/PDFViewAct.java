@@ -282,7 +282,10 @@ public class PDFViewAct extends Activity implements ILayoutView.PDFLayoutListene
 
     @Override
     public void onBackPressed() {
-        if (m_controller == null || m_controller.OnBackPressed())
+        boolean controllerSaysProceed = m_controller == null || m_controller.OnBackPressed();
+        android.util.Log.d("RadaeeDialogDebug", "onBackPressed() m_controller=" + m_controller
+                + " controllerSaysProceed=" + controllerSaysProceed);
+        if (controllerSaysProceed)
             onClose(true);
     }
 
@@ -292,7 +295,15 @@ public class PDFViewAct extends Activity implements ILayoutView.PDFLayoutListene
             recent.insert(m_path, m_view.PDFGetPos(0, 0).pageno, m_view.PDFGetView());
             recent.Close();
         }
-        if (m_controller == null) return;
+        if (m_controller == null) {
+            android.util.Log.d("RadaeeDialogDebug", "onClose() abort: m_controller null");
+            return;
+        }
+        int fileState = m_controller.getFileState();
+        boolean autoSaveExtra = getIntent().getBooleanExtra("AUTOMATIC_SAVE", false);
+        android.util.Log.d("RadaeeDialogDebug", "onClose() fileState=" + fileState
+                + " (MODIFIED_NOT_SAVED=" + PDFViewController.MODIFIED_NOT_SAVED + ")"
+                + " autoSaveExtra=" + autoSaveExtra + " Global.g_auto_save_doc=" + Global.g_auto_save_doc);
         if (m_controller.getFileState() == PDFViewController.MODIFIED_NOT_SAVED) {
             if (getIntent().getBooleanExtra("AUTOMATIC_SAVE", false) || Global.g_auto_save_doc) {
                 if (m_controller != null) m_controller.savePDF();
