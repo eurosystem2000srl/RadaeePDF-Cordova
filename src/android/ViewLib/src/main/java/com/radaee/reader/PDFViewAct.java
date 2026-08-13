@@ -147,11 +147,13 @@ public class PDFViewAct extends Activity implements ILayoutView.PDFLayoutListene
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Opt back out of edge-to-edge (forced by default for apps targeting
-        // SDK 35+). This legacy reader UI has fixed-height header/footer
-        // bars that assume the system reserves space for the status/nav
-        // bars; without this they get drawn under them. No-op (and safe) on
-        // pre-15 devices, where that forced behavior doesn't exist anyway.
+        // Edge-to-edge is forced by default for apps targeting SDK 35+, and
+        // on Android 16 (API 36) devices the opt-out below is silently
+        // ignored (R.attr#windowOptOutEdgeToEdgeEnforcement /
+        // setDecorFitsSystemWindows both stop working once the OS itself is
+        // 16, regardless of targetSdk — Google removed the escape hatch).
+        // Kept for Android 15 devices where it still applies; Android 16
+        // needs real inset handling instead (below, after setContentView).
         androidx.core.view.WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
         //plz set this line to Activity in AndroidManifes.xml:
         //    android:configChanges="orientation|keyboardHidden|screenSize"
@@ -236,6 +238,15 @@ public class PDFViewAct extends Activity implements ILayoutView.PDFLayoutListene
             }
         }
         setContentView(m_layout);
+        // Real fix for Android 16, where the opt-out above no longer works:
+        // consume system bar insets as padding on the root layout, so the
+        // header/footer bars stay clear of the status/nav bars regardless
+        // of whether edge-to-edge could be disabled.
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(m_layout, (v, insets) -> {
+            androidx.core.graphics.Insets bars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
     }
 
     @Override
