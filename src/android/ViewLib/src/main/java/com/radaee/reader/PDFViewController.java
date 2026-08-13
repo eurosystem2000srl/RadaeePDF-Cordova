@@ -1267,10 +1267,16 @@ public class PDFViewController implements OnClickListener, SeekBar.OnSeekBarChan
             if (page < 0 || page >= document.GetPageCount()) return false;
             Page ppage = document.GetPage(page);
             if (ppage != null) {
-                if (ppage.FlatAnnots()) {
+                boolean flatRes = ppage.FlatAnnots();
+                android.util.Log.d("RadaeeFlatDebug", "flatAnnotsAtPage(" + page + ") FlatAnnots()=" + flatRes);
+                if (flatRes) {
                     if (m_view != null && page == m_cur_page) m_view.PDFUpdatePage(m_cur_page);
-                    return document.Save();
+                    boolean saveRes = document.Save();
+                    android.util.Log.d("RadaeeFlatDebug", "flatAnnotsAtPage(" + page + ") Save()=" + saveRes);
+                    return saveRes;
                 }
+            } else {
+                android.util.Log.d("RadaeeFlatDebug", "flatAnnotsAtPage(" + page + ") GetPage returned null");
             }
             return false;
         }
@@ -1286,15 +1292,25 @@ public class PDFViewController implements OnClickListener, SeekBar.OnSeekBarChan
         @Override
         public boolean flatAnnots() {
             Document document = m_view.PDFGetDoc();
+            android.util.Log.d("RadaeeFlatDebug", "flatAnnots() m_view=" + m_view + " docFromView=" + document
+                    + " isOpened=" + (document != null && document.IsOpened()) + " m_docPath=" + m_docPath);
             if ((document == null || !document.IsOpened()) && !TextUtils.isEmpty(m_docPath)) { // try to re-open the document
                 document = new Document();
-                document.Open(m_docPath, "");
+                int reopenRet = document.Open(m_docPath, "");
+                android.util.Log.d("RadaeeFlatDebug", "flatAnnots() re-open ret=" + reopenRet
+                        + " isOpened=" + document.IsOpened() + " pageCount=" + document.GetPageCount());
             }
-            if (document == null || !document.IsOpened()) return false;
+            if (document == null || !document.IsOpened()) {
+                android.util.Log.d("RadaeeFlatDebug", "flatAnnots() abort: document null or not opened");
+                return false;
+            }
             for (int i = 0; i < document.GetPageCount(); i++) {
-                if (!flatAnnotsAtPage(document, i))
+                if (!flatAnnotsAtPage(document, i)) {
+                    android.util.Log.d("RadaeeFlatDebug", "flatAnnots() stopped at page " + i);
                     return false;
+                }
             }
+            android.util.Log.d("RadaeeFlatDebug", "flatAnnots() completed all pages successfully");
             return true;
         }
         @Override
